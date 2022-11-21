@@ -18,7 +18,8 @@ function App() {
     <div className="App">
       <h1>Movie Tweet</h1>
       <form onSubmit={handleSubmit}> 
-        <input 
+        <input
+          placeholder="Enter a movie!"
           value={movieQuery}
           onChange={(event) => setMovieQuery(event.target.value)}>
         </input>
