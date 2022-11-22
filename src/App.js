@@ -2,6 +2,7 @@ import {useState} from "react"
 import './App.css'
 import MovieBox from "./components/MovieBox"
 import {fetchMovieResults} from "./utils/movieClient"
+
 function App() {
  
   const [movieQuery, setMovieQuery] = useState("")
