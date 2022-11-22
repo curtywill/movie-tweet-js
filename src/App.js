@@ -1,18 +1,18 @@
 import {useState} from "react"
 import './App.css'
 import MovieBox from "./components/MovieBox"
-const BASE_QUERY_URL = "https://api.themoviedb.org/3/search/movie?api_key=337e0f9a71da9b1b8f7a3a8f96f603a0"
+import {fetchMovieResults} from "./utils/movieClient"
 function App() {
  
   const [movieQuery, setMovieQuery] = useState("")
   const [movies, setMovies] = useState([])
-  const handleSubmit = event => {
+  
+  const handleSubmit = async (event) => {
     event.preventDefault() // prevents page from refreshing on submit
-
-    fetch(`${BASE_QUERY_URL}&query=${encodeURIComponent(movieQuery)}`)
-    .then(response => response.json())
-    .then(response => setMovies(response.results))
+    const results = await fetchMovieResults(movieQuery)
+    setMovies(results)
   }
+
   // controlled component: input form's value is controlled by React
   return (
     <div className="App">
@@ -25,10 +25,7 @@ function App() {
         </input>
       </form>
       <div className="MoviesContainer">
-        {movies.filter(movie => movie.poster_path !== null && movie.release_date !== "")
-          .map(movie => (
-            <MovieBox key={movie.id} movie={movie}/>
-        ))}
+        {movies.map(movie => <MovieBox key={movie.id} movie={movie}/>)}
       </div>
     </div>
   )

@@ -1,11 +1,11 @@
 import '../App.css'
-const BASE_IMG_URL = "https://image.tmdb.org/t/p/w200"
+import {getMoviePosterURL} from '../utils/movieClient'
 
 function MovieBox({movie}) {
 
   return (
     <div className="MovieBox">
-      <img src={BASE_IMG_URL+movie.poster_path} />
+      <img className="Poster" src={getMoviePosterURL(movie)} alt="loading..." />
       <p>{movie.original_title}</p>
     </div>
   )
