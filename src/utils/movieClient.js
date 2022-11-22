@@ -10,6 +10,6 @@ const fetchMovieResults = async (query) => {
 const filterMovies = movie => movie.poster_path !== null && movie.release_date !== ""
 
 const getMoviePosterURL = movie => BASE_IMG_URL+movie.poster_path
- 
+
 
 export {fetchMovieResults, getMoviePosterURL}
