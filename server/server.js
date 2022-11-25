@@ -29,6 +29,7 @@ app.get('/oauth/twitter', async (req, res) => {
 })
 
 app.get('/oauth/twitter/callback', (req, res) => {
+  console.log(req.session)
   const {oauth_verifier} = req.query
   const {oauth_token, oauth_token_secret} = req.session
 
@@ -44,10 +45,32 @@ app.get('/oauth/twitter/callback', (req, res) => {
   })
 
   client.login(oauth_verifier)
-    .then(({ client: loggedClient, accessToken, accessSecret }) => {
-      loggedClient.v1.tweet("is this working")
+    .then(({ accessToken, accessSecret }) => {
+      req.session.accessToken = accessToken
+      req.session.accessSecret = accessSecret
     })
-    .catch(() => res.status(403).send('Invalid verifier or access tokens!'));
+    .catch(() => res.status(403).send('Invalid verifier or access tokens!'))
+  
+    res.status(200).send("Sucessfully authorized!")
+})
+
+app.get('/tweet', (req, res) => {
+  console.log(req.session)
+  const { tweet } = req.query
+  const client = new TwitterApi({
+    appKey: process.env.TWITTER_API_KEY,
+    appSecret: process.env.TWITTER_API_SECRET,
+    accessToken: req.session.accessToken,
+    accessSecret: req.session.accessSecret
+  })
+  
+  client.v1.tweet(tweet)
+    .then(() => {
+      res.status(200).send('sucessfully tweeted ' + tweet)
+    })
+    .catch((error) => {
+      res.status(400).send(error)
+    })
 })
 
 app.listen(4000, () => {
