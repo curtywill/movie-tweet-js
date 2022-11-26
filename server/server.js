@@ -1,5 +1,6 @@
 const express = require('express')
 const session = require('express-session')
+const MongoStore = require('connect-mongo')
 const { TwitterApi } = require('twitter-api-v2')
 const CALLBACK_URL = 'http://localhost:4000/oauth/twitter/callback'
 require('dotenv').config()
@@ -13,7 +14,11 @@ app.use(session({
   saveUninitialized: false,
   cookie: {
     maxAge: 1000*60*60*24
-  }
+  },
+  store: MongoStore.create({
+    mongoUrl: 'mongodb://127.0.0.1:27017/db',
+    collectionName: 'sessions'
+  })
 }))
 
 app.get('/oauth/twitter', async (req, res) => {
@@ -22,14 +27,13 @@ app.get('/oauth/twitter', async (req, res) => {
       appSecret: process.env.TWITTER_API_SECRET
     })
     const oauthLink = await client.generateAuthLink(CALLBACK_URL)
-    if(!req.session.oauth_token) req.session.oauth_token = oauthLink.oauth_token
-    if(!req.session.oauth_token_secret) req.session.oauth_token_secret = oauthLink.oauth_token_secret
+    req.session.oauth_token = oauthLink.oauth_token
+    req.session.oauth_token_secret = oauthLink.oauth_token_secret
 
     res.redirect(oauthLink.url)
 })
 
-app.get('/oauth/twitter/callback', (req, res) => {
-  console.log(req.session)
+app.get('/oauth/twitter/callback', async (req, res) => {
   const {oauth_verifier} = req.query
   const {oauth_token, oauth_token_secret} = req.session
 
@@ -43,19 +47,16 @@ app.get('/oauth/twitter/callback', (req, res) => {
     accessToken: oauth_token,
     accessSecret: oauth_token_secret
   })
-
-  client.login(oauth_verifier)
-    .then(({ accessToken, accessSecret }) => {
-      req.session.accessToken = accessToken
-      req.session.accessSecret = accessSecret
-    })
-    .catch(() => res.status(403).send('Invalid verifier or access tokens!'))
   
-    res.status(200).send("Sucessfully authorized!")
+  const {accessToken, accessSecret } = await client.login(oauth_verifier)
+
+  if (!accessToken || !accessSecret) res.status(403).send('Invalid verifier or access tokens!')
+  req.session.accessToken = accessToken
+  req.session.accessSecret = accessSecret
+  res.status(200).send("Sucessfully authorized!")
 })
 
 app.get('/tweet', (req, res) => {
-  console.log(req.session)
   const { tweet } = req.query
   const client = new TwitterApi({
     appKey: process.env.TWITTER_API_KEY,
