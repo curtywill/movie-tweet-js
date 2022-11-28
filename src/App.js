@@ -1,7 +1,7 @@
-import {useState} from "react"
+import { useState } from "react"
 import './App.css'
 import MovieBox from "./components/MovieBox"
-import {fetchMovieResults} from "./utils/movieClient"
+import { fetchMovieResults } from "./utils/movieClient"
 
 function App() {
  
@@ -26,7 +26,7 @@ function App() {
         </input>
       </form>
       <div className="MoviesContainer">
-        {movies.map(movie => <MovieBox key={movie.id} movie={movie}/>)}
+        {movies.map(movie => <MovieBox key={movie.id} movie={movie} />)}
       </div>
     </div>
   )
