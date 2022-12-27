@@ -1,13 +1,19 @@
 const express = require('express')
 const session = require('express-session')
+const formidable = require('express-formidable')
+const cors = require('cors')
 const MongoStore = require('connect-mongo')
+
 const { TwitterApi } = require('twitter-api-v2')
 const CALLBACK_URL = 'http://localhost:4000/oauth/twitter/callback'
 require('dotenv').config()
 
 const app = express()
 
-// TODO: configure mongo session store, look into touch method
+app.use(cors({origin: 'http://localhost:3000', credentials: true}))
+app.use(express.json())
+app.use(formidable())
+
 app.use(session({
   secret: 'mysecret',
   resave: false,
@@ -30,13 +36,14 @@ app.get('/oauth/twitter', async (req, res) => {
     req.session.oauth_token = oauthLink.oauth_token
     req.session.oauth_token_secret = oauthLink.oauth_token_secret
 
-    res.redirect(oauthLink.url)
+    const authURL = oauthLink.url
+    res.status(200).send({ authURL })
 })
 
 app.get('/oauth/twitter/callback', async (req, res) => {
-  const {oauth_verifier} = req.query
-  const {oauth_token, oauth_token_secret} = req.session
-
+  const { oauth_verifier } = req.query
+  const { oauth_token, oauth_token_secret } = req.session
+  
   if (!oauth_token || !oauth_verifier || !oauth_token_secret) {
     return res.status(400).send('You denied the app or your session expired!');
   }
@@ -48,32 +55,35 @@ app.get('/oauth/twitter/callback', async (req, res) => {
     accessSecret: oauth_token_secret
   })
   
-  const {accessToken, accessSecret } = await client.login(oauth_verifier)
+  const { accessToken, accessSecret } = await client.login(oauth_verifier)
 
   if (!accessToken || !accessSecret) res.status(403).send('Invalid verifier or access tokens!')
   req.session.accessToken = accessToken
   req.session.accessSecret = accessSecret
-  res.status(200).send("Sucessfully authorized!")
+  res.redirect('http://localhost:3000/')
 })
 
-app.get('/tweet', (req, res) => {
-  const { tweet } = req.query
+app.get('/oauth/twitter/verify', (req, res) => {
+  res.setHeader('Content-Type', 'application/json')
+  const authorized = !(req.session.accessToken === undefined || req.session.accessSecret === undefined)
+  res.send({ authorized })
+})
+
+app.post('/post/twitter', async (req, res) => {
   const client = new TwitterApi({
     appKey: process.env.TWITTER_API_KEY,
     appSecret: process.env.TWITTER_API_SECRET,
     accessToken: req.session.accessToken,
     accessSecret: req.session.accessSecret
   })
-  
-  client.v1.tweet(tweet)
-    .then(() => {
-      res.status(200).send('sucessfully tweeted ' + tweet)
-    })
-    .catch((error) => {
-      res.status(400).send(error)
-    })
+  const { title, release_date } = req.fields
+  // const arrayBuff = await posterBlob.arrayBuffer()
+  // const poster = Buffer.from(arrayBuff, 'binary')
+  const tweet = `Watching ${title} (${release_date})`
+  const mediaId = await client.v1.uploadMedia(req.files.poster.path)
+  await client.v1.tweet(tweet, {media_ids: mediaId})
 })
 
 app.listen(4000, () => {
-    console.log("listening . . .")
+    console.log("listening on port 4000. . .")
 })

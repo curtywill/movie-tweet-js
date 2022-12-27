@@ -15,6 +15,7 @@
   border: 2px solid black;
   border-radius: 5px;
   margin: 30px;
+  cursor: pointer;
 }
 
 .Poster {

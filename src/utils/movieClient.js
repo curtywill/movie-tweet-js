@@ -6,11 +6,11 @@ const fetchMovieResults = async (query) => {
   return results.filter(movie => movie.poster_path !== null && movie.release_date !== "")
 }
 
-const getMoviePosterURL = async (poster_path) => {
+const getMoviePoster = async (poster_path) => {
   const response = await fetch(`https://image.tmdb.org/t/p/original${poster_path}`, {method: "GET"})
   const blob = await response.blob()
-  return URL.createObjectURL(blob)
+  return blob
 }
 
 
-export { fetchMovieResults, getMoviePosterURL }
+export { fetchMovieResults, getMoviePoster }
