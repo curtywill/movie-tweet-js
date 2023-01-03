@@ -76,10 +76,9 @@ app.post('/post/twitter', async (req, res) => {
     accessToken: req.session.accessToken,
     accessSecret: req.session.accessSecret
   })
-  const { title, release_date } = req.fields
+  const { tweet } = req.fields
   // const arrayBuff = await posterBlob.arrayBuffer()
   // const poster = Buffer.from(arrayBuff, 'binary')
-  const tweet = `Watching ${title} (${release_date})`
   const mediaId = await client.v1.uploadMedia(req.files.poster.path)
   await client.v1.tweet(tweet, {media_ids: mediaId})
 })

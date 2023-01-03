@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import '../App.css'
 import { getMoviePoster } from '../utils/movieClient'
 
-function MovieBox({ movie }) {
+function MovieBox({ movie, updateModalState, updateMovieState }) {
   const [posterURL, setPosterURL] = useState("")
   const [posterBlob, setPosterBlob] = useState()
   useEffect(() => {
@@ -15,24 +15,18 @@ function MovieBox({ movie }) {
     fetchURL()
   }, [])
   
-  const sendMovieTweet = async (title, release_date) => {
-    let formData = new FormData()
-    formData.append("title", title)
-    formData.append("release_date", release_date)
-    formData.append("poster", posterBlob, "poster.jpg")
-    await fetch('http://localhost:4000/post/twitter', {
-      method: "POST",
-      mode: 'cors',
-      credentials: 'include',
-      body: formData
+  const sendStateUp = () => {
+    updateMovieState({
+      title: movie.original_title,
+      release_date: movie.release_date.substring(0, 4),
+      poster: posterBlob
     })
+    updateModalState(true)
   }
 
   return (
     <div className="MovieBox"
-      onClick={() => {
-        sendMovieTweet(movie.original_title, movie.release_date.slice(0, 4))
-      }}>
+      onClick={sendStateUp}>
       <img className="Poster" src={posterURL} alt="loading..." />
       <p>{movie.original_title}</p>
     </div>

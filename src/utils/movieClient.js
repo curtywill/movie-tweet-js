@@ -12,5 +12,16 @@ const getMoviePoster = async (poster_path) => {
   return blob
 }
 
+const sendMovieTweet = async (tweet, poster) => {
+  let formData = new FormData()
+  formData.append("tweet", tweet)
+  formData.append("poster", poster, "poster.jpg")
+  await fetch('http://localhost:4000/post/twitter', {
+    method: "POST",
+    mode: 'cors',
+    credentials: 'include',
+    body: formData
+  })
+}
 
-export { fetchMovieResults, getMoviePoster }
+export { fetchMovieResults, getMoviePoster, sendMovieTweet }
