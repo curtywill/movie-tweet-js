@@ -79,8 +79,15 @@ app.post('/post/twitter', async (req, res) => {
   const { tweet } = req.fields
   // const arrayBuff = await posterBlob.arrayBuffer()
   // const poster = Buffer.from(arrayBuff, 'binary')
-  const mediaId = await client.v1.uploadMedia(req.files.poster.path)
-  await client.v1.tweet(tweet, {media_ids: mediaId})
+  let sentTweet
+  try {
+    const mediaId = await client.v1.uploadMedia(req.files.poster.path)
+    sentTweet = await client.v1.tweet(tweet, {media_ids: mediaId})
+  } catch(error) {
+    return res.status(400).send({ error })
+  }
+  
+  res.status(200).send({tweetId: sentTweet.id})
 })
 
 app.listen(4000, () => {

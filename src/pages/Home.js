@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react"
 import ReactModal from "react-modal"
-import './App.css'
-import MovieBox from "./components/MovieBox"
-import { fetchMovieResults, sendMovieTweet } from "./utils/movieClient"
+import { useNavigate } from "react-router-dom"
+import '../App.css'
+import MovieBox from "../components/MovieBox"
+import { fetchMovieResults, sendMovieTweet } from "../utils/movieClient"
 
-function Home() {
- 
+export function Home() {
   const [movieQuery, setMovieQuery] = useState("")
   const [movies, setMovies] = useState([])
   const [selectedMovie, setSelectedMovie] = useState()
   const [isAuthorized, setIsAuthorized] = useState(false)
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const [tweet, setTweet] = useState("")
+
+  const navigate = useNavigate()
   
   useEffect(() => {
     const check = async () => {
@@ -38,9 +40,21 @@ function Home() {
     window.location.href = authURL
   }
 
-  const handleTweetSubmit = (event) => {
+  const handleTweetSubmit = async (event) => {
     event.preventDefault()
-    sendMovieTweet(tweet, selectedMovie.poster)
+    //sendMovieTweet(tweet, selectedMovie.poster)
+    let formData = new FormData()
+    formData.append("tweet", tweet)
+    formData.append("poster", selectedMovie.poster, "poster.jpg")
+    const response = await fetch('http://localhost:4000/post/twitter', {
+      method: "POST",
+      mode: 'cors',
+      credentials: 'include',
+      body: formData
+    })
+    if(response.ok) {
+      navigate('/success')
+    }
   }
 
   ReactModal.setAppElement('#root') // hides all other content while modal is open
@@ -71,5 +85,3 @@ function Home() {
 
   )
 }
-
-export default Home
