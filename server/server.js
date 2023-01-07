@@ -87,7 +87,22 @@ app.post('/post/twitter', async (req, res) => {
     return res.status(400).send({ error })
   }
   
-  res.status(200).send({tweetId: sentTweet.id})
+  res.status(200).send({tweetId: sentTweet.id_str})
+})
+
+app.get('/oembed/twitter', async (req, res) => {
+  const tweetId = req.query.tweetId
+  const client = new TwitterApi({
+    appKey: process.env.TWITTER_API_KEY,
+    appSecret: process.env.TWITTER_API_SECRET
+  })
+  let tweet
+  try {
+    tweet = await client.v1.oembedTweet(tweetId)
+  } catch(error) {
+    return res.status(400).send({ error })
+  }
+  return res.status(200).send({ tweetHtml: tweet.html })
 })
 
 app.listen(4000, () => {

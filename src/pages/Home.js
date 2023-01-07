@@ -12,7 +12,7 @@ export function Home() {
   const [isAuthorized, setIsAuthorized] = useState(false)
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const [tweet, setTweet] = useState("")
-
+  const [comments, setComments] = useState("")
   const navigate = useNavigate()
   
   useEffect(() => {
@@ -53,7 +53,12 @@ export function Home() {
       body: formData
     })
     if(response.ok) {
-      navigate('/success')
+      const resJson = await response.json()
+      navigate('/success', {
+        state: {
+          tweetId: resJson.tweetId
+        }
+      })
     }
   }
 
