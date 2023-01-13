@@ -19,7 +19,8 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: 1000*60*60*24
+    maxAge: 1000*60*60*24,
+    sameSite:"lax"
   },
   store: MongoStore.create({
     mongoUrl: 'mongodb://127.0.0.1:27017/db',
