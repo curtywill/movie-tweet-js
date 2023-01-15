@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import '../App.css'
 import { getMoviePoster } from '../utils/movieClient'
 
 function MovieBox({ movie, updateModalState, updateMovieState }) {
@@ -25,10 +24,11 @@ function MovieBox({ movie, updateModalState, updateMovieState }) {
   }
 
   return (
-    <div className="MovieBox"
+    <div 
+      className="max-w-[200px] m-[30px] cursor-pointer border-2 border-black rounded"
       onClick={sendStateUp}>
-      <img className="Poster" src={posterURL} alt="loading..." />
-      <p>{movie.original_title}</p>
+      <img className="w-200 h-300" src={posterURL} alt="loading..." />
+      <div>{movie.original_title}</div>
     </div>
   )
 }

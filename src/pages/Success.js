@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
 
-export function Success() {
+export default function Success() {
   const [tweetHtml, setTweetHtml] = useState("")
 
   const location = useLocation()
