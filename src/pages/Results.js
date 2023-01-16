@@ -53,7 +53,7 @@ export default function Results() {
 
   return (
     <div>
-      <div className="MoviesContainer">
+      <div className="grid grid-cols-2">
         {movies.map(movie => <MovieBox key={movie.id} movie={movie} updateModalState={setModalIsOpen} updateMovieState={setSelectedMovie} />)}
       </div>
       <ReactModal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)}>
