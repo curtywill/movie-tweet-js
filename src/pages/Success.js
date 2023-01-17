@@ -24,9 +24,9 @@ export default function Success() {
   }
 
   return (
-    <div>
-      <h1>Sent tweet!</h1>
-      <div dangerouslySetInnerHTML={{__html: tweetHtml}} />
+    <div className="flex flex-col justify-center center-items text-center">
+      <h1 className="text-5xl font-bold pb-10 pt-10">Sent tweet!</h1>
+      <div className="pl-[30%]" dangerouslySetInnerHTML={{__html: tweetHtml}} />
     </div>
   )
 }
