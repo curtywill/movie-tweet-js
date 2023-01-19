@@ -43,6 +43,7 @@ export default function Results() {
       const resJson = await response.json()
       navigate('/success', {
         state: {
+          username: resJson.username,
           tweetId: resJson.tweetId
         }
       })

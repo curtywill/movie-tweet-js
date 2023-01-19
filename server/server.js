@@ -87,8 +87,8 @@ app.post('/post/twitter', async (req, res) => {
   } catch(error) {
     return res.status(400).send({ error })
   }
-  
-  res.status(200).send({tweetId: sentTweet.id_str})
+  console.log(sentTweet)
+  res.status(200).send({username: sentTweet.user.screen_name, tweetId: sentTweet.id_str})
 })
 
 app.get('/oembed/twitter', async (req, res) => {
