@@ -9,18 +9,6 @@ export default function Success() {
     if(!location.state) return
     setTweetURL(`https://twitter.com/${location.state.username}/status/${location.state.tweetId}`)
   }, [location.state])
-  // useEffect(() => {
-  //   const getTweetHtml = async () => {
-  //     if(location.state.tweetId) {
-  //       const response = await fetch(`http://localhost:4000/oembed/twitter?tweetId=${location.state.tweetId}`, {method: "GET" })
-  //       if(response.ok) {
-  //         const resJson = await response.json()
-  //         setTweetHtml(resJson.tweetHtml)
-  //       }
-  //     }
-  //   }
-  //   getTweetHtml()
-  // }, [])
 
   return (
     <div className="flex flex-col justify-center center-items text-center">

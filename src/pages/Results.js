@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react"
 import ReactModal from "react-modal"
 import { useNavigate, useLocation } from "react-router-dom"
-import '../App.css'
 import MovieBox from "../components/MovieBox"
 
 const MAX_TWEET_LENGTH = 280
