@@ -8,14 +8,12 @@ export default function Home() {
 
   const navigate = useNavigate()
 
-  // TODO: make useEffect async functions instantlly invoked
   useEffect(() => {
-    const check = async () => {
+    (async () => {
       const response = await fetch('http://localhost:4000/oauth/twitter/verify', { method: 'GET', credentials: 'include' })
       const { authorized } = await response.json()
       setIsAuthorized(authorized)
-    }
-    check()
+    })()
   }, [])
 
   const handleQuerySubmit = async (event) => {
