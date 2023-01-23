@@ -34,10 +34,12 @@ app.use(session({
 }));
 
 const oauthRouter = require('./routes/oauth.routes');
-const postRouter = require('./routes/post.routes');
+const postRouter  = require('./routes/post.routes');
+const tmdbRouter  = require('./routes/tmdb.routes');
 
 app.use('/oauth', oauthRouter);
 app.use('/post', postRouter);
+app.use('/tmdb', tmdbRouter);
 
 app.listen(4000, () => {
   console.log("listening on port 4000. . .");

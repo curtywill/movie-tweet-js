@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/twitter', async (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
   const client = new TwitterApi({
     appKey: process.env.TWITTER_API_KEY,
     appSecret: process.env.TWITTER_API_SECRET
