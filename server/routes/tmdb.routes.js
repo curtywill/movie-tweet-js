@@ -3,12 +3,8 @@ const router = express.Router();
 
 const BASE_QUERY_URL = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.TMDB_API_KEY}`;
 
-router.use((req, res, next) => {
-  res.setHeader('Content-Type', 'application/json');
-  next();
-});
-
 router.get('/fetch', async (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
   const { query } = req.query;
   try {
     const response  = await fetch(`${BASE_QUERY_URL}&query=${query}`, { method: 'GET' });

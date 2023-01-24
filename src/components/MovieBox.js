@@ -25,7 +25,7 @@ function MovieBox({ movie, updateModalState, updateMovieState }) {
 
   return (
     <div
-      className="flex flex-col items-center bg-white border rounded-lg shadow-md md:flex-row md:max-w-xl hover:bg-gray-100 cursor-pointer min-w[30%] max-w-prose ml-28 mt-10"
+      className="flex flex-col items-center bg-white border rounded-lg shadow-md md:flex-row md:max-w-xl hover:bg-gray-100 cursor-pointer min-w[50%] max-w-prose ml-28 mt-10"
       onClick={sendStateUp}>
       <img className="object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-l-lg" src={posterURL} alt="" />
       <div className="flex flex-col justify-between p-4 leading-normal">
