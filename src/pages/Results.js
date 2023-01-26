@@ -1,58 +1,59 @@
-import React, { useEffect, useState } from "react"
-import ReactModal from "react-modal"
-import { useNavigate, useLocation } from "react-router-dom"
-import MovieBox from "../components/MovieBox"
-
-const MAX_TWEET_LENGTH = 280
+import React, { useEffect, useState } from "react";
+import ReactModal from "react-modal";
+import { useNavigate, useLocation } from "react-router-dom";
+import MovieBox from "../components/MovieBox";
+import Navbar from "../components/Navbar";
+const MAX_TWEET_LENGTH = 280;
 
 export default function Results() {
-  const [movies, setMovies] = useState([])
-  const [selectedMovie, setSelectedMovie] = useState()
-  const [modalIsOpen, setModalIsOpen] = useState(false)
-  const [baseTweet, setBaseTweet] = useState("")
-  const [comments, setComments] = useState("")
-  const [watched, setWatched] = useState(false)
+  const [movies, setMovies] = useState([]);
+  const [selectedMovie, setSelectedMovie] = useState();
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [baseTweet, setBaseTweet] = useState("");
+  const [comments, setComments] = useState("");
+  const [watched, setWatched] = useState(false);
 
-  const navigate = useNavigate()
-  const location = useLocation()
-
-  useEffect(() => {
-    if (!selectedMovie) return
-    if (watched) setBaseTweet(`watched ${selectedMovie.title} (${selectedMovie.release_date}) `)
-    else setBaseTweet(`watching ${selectedMovie.title} (${selectedMovie.release_date}) `)
-  }, [selectedMovie, watched])
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    if (location.state) setMovies(location.state.movies)
-  }, [location.state])
+    if (!selectedMovie) return;
+    if (watched) setBaseTweet(`watched ${selectedMovie.title} (${selectedMovie.release_date}) `);
+    else setBaseTweet(`watching ${selectedMovie.title} (${selectedMovie.release_date}) `);
+  }, [selectedMovie, watched]);
+
+  useEffect(() => {
+    if (location.state) setMovies(location.state.movies);
+  }, [location.state]);
 
   const handleTweetSubmit = async (event) => {
-    event.preventDefault()
+    event.preventDefault();
     //sendMovieTweet(tweet, selectedMovie.poster)
-    let formData = new FormData()
-    formData.append("tweet", baseTweet + comments)
-    formData.append("poster", selectedMovie.poster, "poster.jpg")
+    let formData = new FormData();
+    formData.append("tweet", baseTweet + comments);
+    formData.append("poster", selectedMovie.poster, "poster.jpg");
     const response = await fetch('http://localhost:4000/post/twitter', {
       method: "POST",
       mode: 'cors',
       credentials: 'include',
       body: formData
-    })
+    });
     if (response.ok) {
-      const resJson = await response.json()
+      const resJson = await response.json();
       navigate('/success', {
         state: {
           username: resJson.username,
           tweetId: resJson.tweetId
         }
-      })
+      });
     }
-  }
+  };
 
-  ReactModal.setAppElement('#root') // hides all other content while modal is open
+  ReactModal.setAppElement('#root'); // hides all other content while modal is open
 
   return (
-    <div>
+    <>
+      <Navbar />
       <div className="grid grid-cols-2">
         {movies.map(movie => <MovieBox key={movie.id} movie={movie} updateModalState={setModalIsOpen} updateMovieState={setSelectedMovie} />)}
       </div>
@@ -61,10 +62,10 @@ export default function Results() {
           <form className="space-y-6" onSubmit={handleTweetSubmit}>
             <div>
               <label htmlFor="base-tweet" className="block mb-2 text-sm font-medium text-gray-900">Base Tweet</label>
-              <input 
-                id="base-tweet" 
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
-                value={baseTweet} 
+              <input
+                id="base-tweet"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                value={baseTweet}
                 readOnly />
             </div>
             <div>
@@ -79,22 +80,22 @@ export default function Results() {
             <div className="flex items-start">
               <div className="flex items-start">
                 <div className="flex items-center h-5">
-                  <input 
-                    id="watched" 
+                  <input
+                    id="watched"
                     type="checkbox"
-                    onChange={() => setWatched(!watched)} 
+                    onChange={() => setWatched(!watched)}
                     className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300" />
                 </div>
                 <label htmlFor="watched" className="ml-2 text-sm font-medium">Watched?</label>
               </div>
               <p className="ml-auto text-sm font-medium">{(baseTweet + comments).length}/{MAX_TWEET_LENGTH}</p>
             </div>
-            <button 
+            <button
               type="submit"
               className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Send Tweet!</button>
           </form>
         </div>
       </ReactModal>
-    </div>
-  )
+    </>
+  );
 }

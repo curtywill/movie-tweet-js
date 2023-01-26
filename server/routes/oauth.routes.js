@@ -39,10 +39,20 @@ router.get('/twitter/callback', async (req, res) => {
   res.redirect('http://localhost:3000/');
 });
 
-router.get('/twitter/verify', (req, res) => {
+router.get('/twitter/verify', async (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   const authorized = !(req.session.accessToken === undefined || req.session.accessSecret === undefined);
-  res.send({ authorized });
+  if(!authorized) return res.sendStatus(400);
+
+  const client = new TwitterApi({
+    appKey: process.env.TWITTER_API_KEY,
+    appSecret: process.env.TWITTER_API_SECRET,
+    accessToken: req.session.accessToken,
+    accessSecret: req.session.accessSecret
+  });
+
+  const { name, screen_name: screenName, profile_image_url_https: pfpURL } = await client.currentUser();
+  return res.status(200).send({ name, screenName, pfpURL });
 });
 
 module.exports = router;

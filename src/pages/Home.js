@@ -1,18 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext, UserContext } from "../Context";
 import Navbar from "../components/Navbar";
 
 export default function Home() {
   const [movieQuery, setMovieQuery] = useState("");
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  const { auth, setAuth } = useContext(AuthContext);
+  const { setUser } = useContext(UserContext);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
       const response = await fetch('http://localhost:4000/oauth/twitter/verify', { method: 'GET', credentials: 'include' });
-      const { authorized } = await response.json();
-      setIsAuthorized(authorized);
+      if(response.ok) {
+        const { name, screenName, pfpURL } = await response.json();
+        setUser({ name, screenName, pfpURL });
+        setAuth(true);
+      }
     })();
   }, []);
 
@@ -36,9 +41,9 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <div className="flex flex-col text-center items-center justify-center min-h-screen min-w-full">
+      <div className="flex flex-col text-center items-center justify-center min-h-[90vh] min-w-full">
         <h1 className="text-5xl font-bold mb-10">Movie Tweet</h1>
-        {isAuthorized
+        {auth
           ? <form onSubmit={handleQuerySubmit} className="w-[50%]">
             <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only">Search</label>
             <div className="relative">
