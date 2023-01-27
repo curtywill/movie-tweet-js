@@ -1,15 +1,19 @@
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect, useState, useContext } from "react";
+import { useLocation, Navigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import { AuthContext } from "../Context";
 
 export default function Success() {
   const [tweetURL, setTweetURL] = useState("");
   const location = useLocation();
+  const { auth } = useContext(AuthContext);
 
   useEffect(() => {
     if (!location.state) return;
     setTweetURL(`https://twitter.com/${location.state.username}/status/${location.state.tweetId}`);
   }, [location.state]);
+
+  if (!auth) return <Navigate to="/" replace />;
 
   return (
     <>
