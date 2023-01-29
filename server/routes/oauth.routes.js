@@ -50,9 +50,13 @@ router.get('/twitter/verify', async (req, res) => {
     accessToken: req.session.accessToken,
     accessSecret: req.session.accessSecret
   });
-
+  
   const { name, screen_name: screenName, profile_image_url_https: pfpURL } = await client.currentUser();
   return res.status(200).send({ name, screenName, pfpURL });
 });
+
+router.get('/logout', (req, res) => {
+  req.session.destroy();
+})
 
 module.exports = router;

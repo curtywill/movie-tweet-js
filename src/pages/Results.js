@@ -32,10 +32,9 @@ export default function Results() {
     event.preventDefault();
     let formData = new FormData();
     formData.append("tweet", baseTweet + comments);
-    formData.append("poster", selectedMovie.poster);
+    formData.append("poster", selectedMovie.poster, "poster.jpg");
     const response = await fetch('http://localhost:4000/post/twitter', {
       method: "POST",
-      mode: 'cors',
       credentials: 'include',
       body: formData
     });

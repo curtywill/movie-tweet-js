@@ -7,7 +7,7 @@ import { AuthContext, UserContext } from "./Context";
 
 function App() {
   const [auth, setAuth] = useState(false);
-  const [user, setUser] = useState(undefined);
+  const [user, setUser] = useState({});
 
   return (
     <AuthContext.Provider value={{ auth, setAuth }}>

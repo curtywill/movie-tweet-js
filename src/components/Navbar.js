@@ -1,4 +1,4 @@
-import UserDropdown from "./UserDropdown";
+import UserDiv from "./UserDiv";
 import { useContext } from "react";
 import { AuthContext } from "../Context";
 
@@ -11,7 +11,7 @@ export default function Navbar() {
         <a href="http://localhost:3000/" className="flex items-center">
           <h1>Movie Tweet</h1>
         </a>
-        {auth && <UserDropdown />}
+        {auth && <UserDiv />}
       </div>
     </nav>
   );

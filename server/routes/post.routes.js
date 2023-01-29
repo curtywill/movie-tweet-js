@@ -1,5 +1,5 @@
 const fs = require('fs')
-const { TwitterApi } = require('twitter-api-v2')
+const { TwitterApi, EUploadMimeType } = require('twitter-api-v2')
 const express = require('express');
 const router = express.Router();
 
@@ -15,7 +15,7 @@ router.post('/twitter', async (req, res) => {
   const posterPath = req.files.poster.path;
   let sentTweet;
   try {
-    const mediaId = await client.v1.uploadMedia(posterPath);
+    const mediaId = await client.v1.uploadMedia(posterPath, { mimeType: EUploadMimeType.Jpeg });
     sentTweet = await client.v1.tweet(tweet, { media_ids: mediaId });
   } catch (error) {
     return res.status(400).send({ error });
