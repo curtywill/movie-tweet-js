@@ -9,7 +9,7 @@ router.get('/fetch', async (req, res) => {
   try {
     const response  = await fetch(`${BASE_QUERY_URL}&query=${query}`, { method: 'GET' });
     const { results } = await response.json();
-    res.status(200).send({ results: results.filter(movie => movie.poster_path !== null && movie.release_date !== "") });
+    res.status(200).send({ results: results.filter(movie => !!movie.poster_path && !!movie.release_date) });
   } catch(err) {
     res.status(400).send({ msg: "Error fetching movie results!", err});
   }

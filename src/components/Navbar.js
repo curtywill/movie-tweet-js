@@ -2,6 +2,7 @@ import UserDiv from "./UserDiv";
 import { useContext } from "react";
 import { AuthContext } from "../Context";
 import { Link } from "react-router-dom";
+
 export default function Navbar() {
   const { auth } = useContext(AuthContext);
 

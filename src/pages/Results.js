@@ -6,7 +6,6 @@ import Navbar from "../components/Navbar";
 const MAX_TWEET_LENGTH = 280;
 
 export default function Results() {
-  const [movies, setMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [baseTweet, setBaseTweet] = useState("");
@@ -22,13 +21,10 @@ export default function Results() {
     else setBaseTweet(`watching ${selectedMovie.title} (${selectedMovie.release_date}) `);
   }, [selectedMovie, watched]);
 
-  useEffect(() => {
-    if (location.state) setMovies(location.state.movies);
-  }, [location.state]);
-
   const handleTweetSubmit = async (event) => {
     event.preventDefault();
     let fullTweet = baseTweet+comments;
+    // truncate overly long tweets
     if(fullTweet.length > MAX_TWEET_LENGTH) fullTweet = fullTweet.substring(0, MAX_TWEET_LENGTH);
   
     let formData = new FormData();
@@ -55,8 +51,12 @@ export default function Results() {
   return (
     <>
       <Navbar />
+      <h1 className="text-center font-bold text-4xl pt-10">Results for "{location.state.movieQuery}"</h1>
       <div className="grid grid-cols-2">
-        {movies.map(movie => <MovieBox key={movie.id} movie={movie} updateModalState={setModalIsOpen} updateMovieState={setSelectedMovie} />)}
+        {location.state.movies.length 
+          ? location.state.movies.map(movie => <MovieBox key={movie.id} movie={movie} updateModalState={setModalIsOpen} updateMovieState={setSelectedMovie} />)
+          : <></>
+        }
       </div>
       <ReactModal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} className="absolute top-0 bottom-0 left-0 right-0 m-auto bg-white border border-gray-200 shadow-md max-w-[50%] max-h-[60%]">
         <div className="w-full h-full p-4 rounded-lg sm:p-6 md:p-8">
@@ -67,7 +67,8 @@ export default function Results() {
                 id="base-tweet"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 value={baseTweet}
-                readOnly />
+                readOnly 
+              />
             </div>
             <div>
               <label htmlFor="comments" className="block mb-2 text-sm font-medium text-gray-900">Comments (optional)</label>
@@ -77,7 +78,8 @@ export default function Results() {
                 id="comments"
                 value={comments}
                 onChange={(e) => setComments(e.target.value)}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full max-h-[30%] p-2.5 resize-none" />
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full max-h-[30%] p-2.5 resize-none" 
+              />
             </div>
             <div className="flex items-start">
               <div className="flex items-start">
@@ -86,7 +88,8 @@ export default function Results() {
                     id="watched"
                     type="checkbox"
                     onChange={() => setWatched(!watched)}
-                    className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300" />
+                    className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300" 
+                  />
                 </div>
                 <label htmlFor="watched" className="ml-2 text-sm font-medium">Watched?</label>
               </div>
@@ -94,7 +97,10 @@ export default function Results() {
             </div>
             <button
               type="submit"
-              className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Send Tweet!</button>
+              className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+            >
+              Send Tweet!
+            </button>
           </form>
         </div>
       </ReactModal>
