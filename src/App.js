@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import Results from "./pages/Results";
 import Success from "./pages/Success";
 import { AuthContext, UserContext } from "./Context";
+import RequireAuth from "./components/RequireAuth";
 
 function App() {
   const [auth, setAuth] = useState(false);
@@ -13,9 +14,22 @@ function App() {
     <AuthContext.Provider value={{ auth, setAuth }}>
       <UserContext.Provider value={{ user, setUser }}>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/results" element={<Results />} />
-          <Route path="/success" element={<Success />} />
+          <Route path="/" 
+            element={<Home />} 
+          />
+          <Route path="/results" 
+            element={
+              <RequireAuth>
+                <Results />
+              </RequireAuth>
+            } 
+          />
+          <Route path="/success" 
+            element={
+              <RequireAuth>
+                <Success />
+              </RequireAuth>
+            } />
         </Routes>
       </UserContext.Provider>
     </AuthContext.Provider>

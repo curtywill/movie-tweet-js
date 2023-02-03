@@ -1,9 +1,8 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import ReactModal from "react-modal";
-import { useNavigate, useLocation, Navigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import MovieBox from "../components/MovieBox";
 import Navbar from "../components/Navbar";
-import { AuthContext } from "../Context";
 const MAX_TWEET_LENGTH = 280;
 
 export default function Results() {
@@ -16,7 +15,6 @@ export default function Results() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const { auth } = useContext(AuthContext);
 
   useEffect(() => {
     if (!selectedMovie) return;
@@ -52,7 +50,6 @@ export default function Results() {
     }
   };
 
-  if (!auth) return <Navigate to="/" replace />;
   ReactModal.setAppElement('#root'); // hides all other content while modal is open
 
   return (
