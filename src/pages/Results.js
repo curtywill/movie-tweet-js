@@ -20,7 +20,7 @@ export default function Results() {
 
   useEffect(() => {
     if (!selectedMovie) return;
-    if (watched) setBaseTweet(`watched ${selectedMovie.title} (${selectedMovie.release_date}) `);
+    if (watched) setBaseTweet(`watched  ${selectedMovie.title} (${selectedMovie.release_date}) `);
     else setBaseTweet(`watching ${selectedMovie.title} (${selectedMovie.release_date}) `);
   }, [selectedMovie, watched]);
 
@@ -30,9 +30,12 @@ export default function Results() {
 
   const handleTweetSubmit = async (event) => {
     event.preventDefault();
+    let fullTweet = baseTweet+comments;
+    if(fullTweet.length > MAX_TWEET_LENGTH) fullTweet = fullTweet.substring(0, MAX_TWEET_LENGTH);
+  
     let formData = new FormData();
-    formData.append("tweet", baseTweet + comments);
-    formData.append("poster", selectedMovie.poster, "poster.jpg");
+    formData.append("tweet", fullTweet);
+    formData.append("poster", selectedMovie.poster);
     const response = await fetch('http://localhost:4000/post/twitter', {
       method: "POST",
       credentials: 'include',
@@ -73,6 +76,7 @@ export default function Results() {
               <label htmlFor="comments" className="block mb-2 text-sm font-medium text-gray-900">Comments (optional)</label>
               <textarea
                 rows={6}
+                maxLength={MAX_TWEET_LENGTH}
                 id="comments"
                 value={comments}
                 onChange={(e) => setComments(e.target.value)}

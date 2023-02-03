@@ -5,6 +5,7 @@ const BASE_IMG_URL = `https://image.tmdb.org/t/p/original`
 function MovieBox({ movie, updateModalState, updateMovieState }) {
   const [posterURL, setPosterURL] = useState("");
   const [posterBlob, setPosterBlob] = useState();
+  
   useEffect(() => {
     (async () => {
       setPosterURL(BASE_IMG_URL+movie.poster_path);

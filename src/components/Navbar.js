@@ -9,7 +9,7 @@ export default function Navbar() {
     <nav className="bg-white border-gray-200 px-2 sm:px-4 py-2.5 rounded">
       <div className="container flex flex-wrap items-center justify-between mx-auto">
         <a href="http://localhost:3000/" className="flex items-center">
-          <h1>Movie Tweet</h1>
+          <h1 className="text-4xl font-extrabold">Movie Tweet</h1>
         </a>
         {auth && <UserDiv />}
       </div>
